@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:modestnotes/src/controllers/controller.dart';
 import 'package:modestnotes/src/models/categories.dart';
 import 'package:modestnotes/src/models/note.dart';
 import 'package:modestnotes/src/routes/routes.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,30 +12,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Note> allNotes = [
-    Note(title: 'My Dreams', content: 'Today is friday and i had a special dream with my favorit friends'),
-    Note(title: 'Need to do', content: 'I need to do my homework, ...', isFixed: true),
-    Note(title: 'Toughts', content: 'Any other thing, its not important for now, so, try to ignore this messages okay? all right, so lets get started to programming'),
-  ];
-
-  List<Categories> allCategories = [
-    Categories(name: 'English', amount: 3, isFavorit: true),
-    Categories(name: 'Spanish', amount: 120, isFavorit: true),
-    Categories(name: 'Java', amount: 43, isFavorit: false),
-    Categories(name: 'Frontend', amount: 25, isFavorit: false),
-    Categories(name: 'Flutter', amount: 2, isFavorit: true),
-  ];
-
-  bool pinned = false;
-
   @override
   Widget build(BuildContext context) {
+    Controller controller = Provider.of<Controller>(context, listen: false);
     return SafeArea(
       child: Scaffold(
-        drawer: _buildDrawer(allCategories),
+        drawer: _buildDrawer(controller.allCategories),
         appBar: AppBar(
           backgroundColor: Colors.white,
-          title: Center(child: Text('Pasta Atual', style: GoogleFonts.getFont('Pacifico', color: Colors.black),),),
+          title: Center(
+            child: Text(
+              'Pasta Atual',
+              style: GoogleFonts.getFont('Rubik', color: Colors.black),
+            ),
+          ),
           iconTheme: IconThemeData(color: Colors.black),
           actions: [
             IconButton(
@@ -42,7 +34,17 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        body: _buildNotes(allNotes),
+        body: _buildNotes(controller.allNotes),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.pushNamed(context, AppRoutes.WRITE);
+          },
+          child: Icon(
+            Icons.add,
+            color: Colors.black54,
+          ),
+          backgroundColor: Colors.grey[300],
+        ),
       ),
     );
   }
@@ -50,7 +52,7 @@ class _HomePageState extends State<HomePage> {
   Widget _buildDrawer(List<Categories> allCategories) {
     return Drawer(
       child: ListView.builder(
-        itemCount: allCategories.length+2,
+        itemCount: allCategories.length + 2,
         itemBuilder: (BuildContext context, int index) {
           if (index == 0) {
             return Column(
@@ -65,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                         padding: EdgeInsets.only(right: 5),
                       ),
                       Expanded(
-                        child: Text('All notes'),
+                        child: Text('All notes', style: GoogleFonts.getFont('Rubik')),
                       ),
                       Text('103')
                     ],
@@ -81,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                         padding: EdgeInsets.only(right: 5),
                       ),
                       Expanded(
-                        child: Text('Non Categorized'),
+                        child: Text('Non Categorized',style: GoogleFonts.getFont('Rubik')),
                       ),
                       Text('8')
                     ],
@@ -90,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                 Divider(),
               ],
             );
-          } else if (allCategories.length+1 == index) {
+          } else if (allCategories.length + 1 == index) {
             return Column(
               children: [
                 Divider(),
@@ -107,94 +109,125 @@ class _HomePageState extends State<HomePage> {
                         ),
                         padding: EdgeInsets.only(right: 5),
                       ),
-                      Text('Manage Categories'),
+                      Text('Manage Categories', style: GoogleFonts.getFont('Rubik')),
                     ],
                   ),
                 ),
               ],
             );
           } else {
-            return _buildFolders(index-1, allCategories);
+            return _buildFolders(index - 1, allCategories);
           }
         },
       ),
     );
   }
 
-  Widget _buildFolders(int index, List<Categories> allCategories){
+  Widget _buildFolders(int index, List<Categories> allCategories) {
     return FlatButton(
-              padding: EdgeInsets.only(left: 16, right: 0),
-              // Non categorized notes
-              onPressed: () {},
-              child: Row(
-                children: [
-                  Container(
-                    child: Icon(
-                      Icons.library_books,
-                      color: Colors.grey,
-                    ),
-                    padding: EdgeInsets.only(right: 20),
-                  ),
-                  Expanded(
-                    child: Text('${allCategories[index].name}$index'),
-                  ),
-                  Text('${allCategories[index].amount}'),
-                  allCategories[index].isFavorit ? IconButton(
-                    icon: Icon(Icons.star),
-                    onPressed: () {},
-                    color: Colors.yellow[700],
-                    splashColor: Colors.white,
-                    highlightColor: Colors.white,
-                  ) : IconButton(
-                    icon: Icon(Icons.star_border),
-                    onPressed: () {},
-                    color: Colors.yellow[700],
-                    splashColor: Colors.white,
-                    highlightColor: Colors.white,
-                  )
-                ],
-              ),
-            );
+      padding: EdgeInsets.only(left: 16, right: 0),
+      // Non categorized notes
+      onPressed: () {},
+      child: Row(
+        children: [
+          Container(
+            child: Icon(
+              Icons.library_books,
+              color: Colors.grey,
+            ),
+            padding: EdgeInsets.only(right: 20),
+          ),
+          Expanded(
+            child: Text('${allCategories[index].name}$index', style: GoogleFonts.getFont('Rubik')),
+          ),
+          Text('${allCategories[index].amount}', style: GoogleFonts.getFont('Rubik')),
+          allCategories[index].isFavorit
+              ? IconButton(
+                  icon: Icon(Icons.star),
+                  onPressed: () {},
+                  color: Colors.yellow[700],
+                  splashColor: Colors.white,
+                  highlightColor: Colors.white,
+                )
+              : IconButton(
+                  icon: Icon(Icons.star_border),
+                  onPressed: () {},
+                  color: Colors.yellow[700],
+                  splashColor: Colors.white,
+                  highlightColor: Colors.white,
+                )
+        ],
+      ),
+    );
   }
+
+  
 
   Widget _buildNotes(List<Note> allNotes) {
     return ListView.builder(
+      padding: EdgeInsets.all(10),
       itemCount: allNotes.length,
       itemBuilder: (BuildContext context, int index) {
         return Column(
           children: [
-            FlatButton(
-              onPressed: () { 
-                print(index);
-                Navigator.pushNamed(context, AppRoutes.WRITE, arguments: index);
-              },
-              child: ListTile(
-                contentPadding: EdgeInsets.all(0),
-                title: Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'My Dream ${allNotes[index].title}',
-                        style: GoogleFonts.getFont('Pacifico', fontSize: 20),
-                      ),
-                    ),
-                     allNotes[index].isFixed ? Icon(Icons.fiber_pin) : Container(),
+            Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: [0.09, 0.55, 0.9],
+                  colors: [
+                    Colors.grey[400],
+                    Colors.grey[300],
+                    Colors.grey[400]
                   ],
                 ),
-                subtitle: Padding(
-                  padding: const EdgeInsets.all(0),
-                  child: Text(allNotes[index].content, textAlign: TextAlign.justify,
-                    maxLines: 3,
-                  ) 
+                boxShadow: [
+                BoxShadow(color: Colors.black54, blurRadius: 1)
+                ],
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(10),
+                  topLeft: Radius.circular(2),
+                  topRight: Radius.circular(2),
+                  bottomLeft: Radius.circular(2),
                 ),
-                //trailing:
+              ),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: FlatButton(
+                  onPressed: () async {
+                    print(index);
+                    Navigator.pushNamed(context, AppRoutes.WRITE,
+                        arguments: index);
+                  },
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(0),
+                    title: Expanded(
+                      child: Text(
+                        '${allNotes[index].title}',
+                        maxLines: 1,
+                        style: GoogleFonts.getFont('Rubik', fontSize: 20,color: Colors.black87)
+                      ),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Text(
+                        allNotes[index].content,
+                        textAlign: TextAlign.justify,
+                        maxLines: 3,
+                        style: GoogleFonts.getFont('Rubik')
+                      ),
+                    ),
+                    //trailing:
+                  ),
+                ),
               ),
             ),
-            Divider(),
+            //Divider(),
+            SizedBox(height: 10,),
           ],
         );
       },
     );
   }
-
 }
