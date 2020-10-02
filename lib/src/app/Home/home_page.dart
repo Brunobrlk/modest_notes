@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        body: _buildNotes(controller.allNotes),
+        body: _reorderableListView(context, controller.allNotes),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
             Navigator.pushNamed(context, AppRoutes.WRITE);
@@ -161,9 +161,98 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  
+  Widget _reorderableListView(BuildContext context, List<Note> allNotes) {
+    _updateMyItems(int oldIndex, int newIndex){
+      
+      if(oldIndex<newIndex){
+        newIndex-=1;
+      }else{
+        print('New: $newIndex Old: $oldIndex');
+        newIndex+=oldIndex;
+        oldIndex=newIndex-oldIndex;
+        newIndex-=oldIndex;
+        print('New: $newIndex Old: $oldIndex');
 
-  Widget _buildNotes(List<Note> allNotes) {
+      }
+      print('old: $oldIndex new: $newIndex:');
+      Note x = allNotes[newIndex];
+      
+      allNotes.removeAt(newIndex);
+      allNotes.insert(newIndex, allNotes[oldIndex]);
+      allNotes[oldIndex].id=newIndex;
+
+      allNotes.removeAt(oldIndex);
+      allNotes.insert(oldIndex, x);
+      x.id=oldIndex;
+      print("\n\n=====listNotes:====\n");
+      for(final c in allNotes){
+        print('${c.title} ${c.id}\n');
+      }
+    }
+    return ReorderableListView(
+      padding: EdgeInsets.all(10),
+      children: [
+        for (final note in allNotes)
+          Container(
+            key: ValueKey(note),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  stops: [0.09, 0.55, 0.9],
+                  colors: [
+                    Colors.grey[400],
+                    Colors.grey[300],
+                    Colors.grey[400]
+                  ],
+                ),
+                boxShadow: [
+                BoxShadow(color: Colors.black54, blurRadius: 1)
+                ],
+                borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(10),
+                  topLeft: Radius.circular(2),
+                  topRight: Radius.circular(2),
+                  bottomLeft: Radius.circular(2),
+                ),
+              ),
+              child: FlatButton(
+                  onPressed: () async {
+                    print(note.id);
+                    Navigator.pushNamed(context, AppRoutes.WRITE,
+                        arguments: note.id);
+                  },
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(0),
+                    title: Text(
+                        '${note.title}',
+                        maxLines: 1,
+                        style: GoogleFonts.getFont('Rubik', fontSize: 20,color: Colors.black87)
+                      ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Text(
+                        note.content,
+                        textAlign: TextAlign.justify,
+                        maxLines: 3,
+                        style: GoogleFonts.getFont('Rubik')
+                      ),
+                    ),
+                    //trailing:
+                  ),
+              ),
+            ),
+            //Divider(),
+      ], 
+      onReorder: (oldIndex, newIndex){
+        setState(() {
+          _updateMyItems(oldIndex, newIndex);
+        });
+      }
+    );
+  }
+
+ /*  Widget _buildNotes(List<Note> allNotes) {
     return ListView.builder(
       padding: EdgeInsets.all(10),
       itemCount: allNotes.length,
@@ -230,4 +319,5 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
+ */
 }
