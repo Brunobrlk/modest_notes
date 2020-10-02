@@ -4,65 +4,24 @@ import 'package:modestnotes/src/models/note.dart';
 class Controller {
   List<Note> allNotes = [
     Note(
-        id: 0,
-        title: 'My Dreams',
-        content:
-            'Today is friday and i had a special dream with my favorit friends'),
+      id: 0,
+      title: 'Get Started',
+      content:
+          'Para adicionar novas notas, clique no botão \'+\' no canto inferior direito, para salva-las apenas retorne a página de notas anterior',
+    ),
     Note(
-        id: 1,
-        title: 'Need to do',
-        content: 'I need to do my homework, i need to finish this notess',
-        isFixed: true),
+      id: 1,
+      title: 'Get Started 2',
+      content:
+          'Pressione por alguns segundos e arraste alguma anotação para movê-las e organizar de acordo com suas prioridades da maneira que preferir',
+    ),
     Note(
-        id: 2,
-        title: 'Toughts',
-        content:
-            'Any other thing, its not important for now, so, try to ignore this messages okay? all right, so lets get started to programming'),
-            Note(
-                id: 3,
-        title: 'My Dreams',
-        content:
-            'Today is friday and i had a special dream with my favorit friends'),
-    Note(
-        id: 4,
-        title: 'Need to do',
-        content: 'I need to do my homework, i need to finish this notess',
-        isFixed: true),
-    Note(
-        id: 5,
-        title: 'Toughts',
-        content:
-            'Any other thing, its not important for now, so, try to ignore this messages okay? all right, so lets get started to programming'),
-            Note(
-                id: 6,
-        title: 'My Dreams',
-        content:
-            'Today is friday and i had a special dream with my favorit friends'),
-    Note(
-        id: 7,
-        title: 'Need to do',
-        content: 'I need to do my homework, i need to finish this notess',
-        isFixed: true),
-    Note(
-        id: 8,
-        title: 'Toughts',
-        content:
-            'Any other thing, its not important for now, so, try to ignore this messages okay? all right, so lets get started to programming'),
-            Note(
-                id: 9,
-        title: 'My Dreams',
-        content:
-            'Today is friday and i had a special dream with my favorit friends'),
-    Note(
-        id: 10,
-        title: 'Need to do',
-        content: 'I need to do my homework, i need to finish this notess',
-        isFixed: true),
-    Note(
-        id: 11,
-        title: 'Toughts',
-        content:
-            'Any other thing, its not important for now, so, try to ignore this messages okay? all right, so lets get started to programming'),
+      id: 2,
+      title: 'Get Started 3',
+      content:
+          'Agrupe em pastas suas anotações, gerencie-as, veja todas as notas, notas somente de uma pasta e é isso, prático e rápido',
+    ),
+
   ];
 
   List<Categories> allCategories = [
@@ -73,14 +32,25 @@ class Controller {
     Categories(name: 'Flutter', amount: 2, isFavorit: true),
   ];
 
-  addNote(Note note){
+  addNote(Note note) {
+    print('entrou controller');
+    if (note.id == null) {
+      note.id = allNotes.length;
+      print(note.id);
+    }
     allNotes.add(note);
   }
-  removeNote(Note note){
+
+  removeNote(Note note) {
     allNotes.remove(note);
+    print('removeu');
   }
-  updateNote(String title, String content, int index){
-    allNotes[index].title = title;
-    allNotes[index].content = content;
+
+  updateNote(String title, String content, int index) {
+    if (index >= 0) {
+      print('index: $index');
+      allNotes[index].title = title;
+      allNotes[index].content = content;
+    }
   }
 }
