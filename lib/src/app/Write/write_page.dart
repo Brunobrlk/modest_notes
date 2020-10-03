@@ -13,11 +13,13 @@ class WritePage extends StatelessWidget {
     Controller controller = Provider.of<Controller>(context, listen: false);
     TextEditingController titleController = TextEditingController();
     TextEditingController contentController = TextEditingController();
+    bool newNote=true;
     if (args != null) {
-      print('entrou');
       titleController.text = args.title;
       contentController.text = args.content;
+      newNote=false;
     }
+    
 
     return Scaffold(
       body: ListView(
@@ -46,8 +48,13 @@ class WritePage extends StatelessWidget {
                       color: Colors.black54,
                     ),
                     onPressed: () {
-                      Navigator.pop(context);
-                      controller.updateNote(titleController.text, contentController.text, controller.allNotes.indexOf(args));
+                      if(newNote && (titleController.text!='' || contentController.text!='')){
+                        controller.addNote(Note(title: titleController.text, content: contentController.text));
+                        Navigator.pop(context);
+                      }else{
+                        controller.updateNote(titleController.text, contentController.text, controller.allNotes.indexOf(args));
+                        Navigator.pop(context);
+                      }
                     },
                   ),
                 ),
@@ -66,7 +73,9 @@ class WritePage extends StatelessWidget {
                     color: Colors.black54,
                   ),
                   padding: EdgeInsets.zero,
-                  onSelected: (value) {},
+                  onSelected: (value) {
+                    print(value);
+                  },
                   itemBuilder: (context) => <PopupMenuItem>[
                     CheckedPopupMenuItem(
                       value: 'Primeiro',
@@ -75,8 +84,8 @@ class WritePage extends StatelessWidget {
                     ),
                     CheckedPopupMenuItem(
                       value: 'Segundo',
-                      enabled: false,
-                      checked: false,
+                      enabled: true,
+                      checked: true,
                       child: Text('Segundo'),
                     ),
                     CheckedPopupMenuItem(
@@ -163,20 +172,6 @@ class WritePage extends StatelessWidget {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          if (titleController.text != '' || contentController.text != '') {
-            controller.addNote(Note(
-                title: titleController.text, content: contentController.text));
-            print('salvo');
-          }
-        },
-        child: Icon(
-          Icons.save,
-          color: Colors.black54,
-        ),
-        backgroundColor: Colors.grey[300],
       ),
     );
   }

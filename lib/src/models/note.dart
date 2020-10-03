@@ -10,7 +10,7 @@ class Note {
     this.id,
     this.title='',
     this.content='',
-    this.category='all',
+    this.category='NonCategorized',
     this.isFixed=false,
   });
 

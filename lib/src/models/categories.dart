@@ -6,16 +6,14 @@ class Categories {
   int id;
   String name;
   bool isFavorit;
-  List<Note> notes;
-  int amount;
+  List<Note> notes=[];
   Categories({
     this.id,
     this.name='No Named',
     this.isFavorit=false,
     this.notes,
-    this.amount,
   });
-
+  
   getAmountNotes() {
     return notes.length;
   }
